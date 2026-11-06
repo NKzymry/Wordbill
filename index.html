@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2b4acb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Wordbill">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Wordbill – invoices for freelance translators</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet">
+<style>
+[hidden]{display:none!important}
+:root{--bg:#f1f3f7;--card:#fff;--ink:#17202e;--mut:#667085;--line:#dde2ea;--acc:#2b4acb;--accin:#fff;--bad:#b3261e;--ok:#1b7a43;--warn:#9a5b00;--serif:"Newsreader",Georgia,"Times New Roman",serif;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151e;--card:#182030;--ink:#e8ecf4;--mut:#98a2b5;--line:#2a3447;--acc:#8aa2ff;--accin:#0e1530;--bad:#ff8f86;--ok:#79d99b;--warn:#ffbf5c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10151e;--card:#182030;--ink:#e8ecf4;--mut:#98a2b5;--line:#2a3447;--acc:#8aa2ff;--accin:#0e1530;--bad:#ff8f86;--ok:#79d99b;--warn:#ffbf5c;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header,main{max-width:720px;margin:0 auto;padding-left:16px;padding-right:16px}
+header{padding-top:16px}
+h1,h2{font-family:var(--serif);margin:0}
+h1{font-size:26px;letter-spacing:-.01em}
+h2{font-size:21px;margin:14px 0 4px}
+.tag{color:var(--mut);font-size:14px;margin:0 0 12px}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+nav button{flex:1;border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:10px 4px;color:var(--mut);font-weight:600}
+nav button.on{color:var(--acc);border-bottom-color:var(--acc)}
+main{padding-top:8px;padding-bottom:48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:10px 0}
+button,.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 13px;cursor:pointer;text-decoration:none;display:inline-block}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.pri{background:var(--acc);color:var(--accin);border-color:var(--acc);font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:14px;color:var(--mut);margin:8px 0}
+input,select,textarea{display:block;width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;margin-top:3px}
+.chk{display:flex;gap:8px;align-items:center;color:var(--ink)}.chk input{width:auto;margin:0}
+.mut{color:var(--mut);font-size:14px}.bad{color:var(--bad)}.r{text-align:right}
+.k{flex:1;min-width:140px;margin:0}.k span{display:block;color:var(--mut);font-size:14px}.k b{font:700 24px var(--serif)}
+.top{display:flex;justify-content:space-between;gap:12px}
+.b{display:inline-block;font-size:13px;font-weight:600;border-radius:99px;padding:1px 10px;border:1px solid currentColor}
+.b.paid{color:var(--ok)}.b.unpaid{color:var(--warn)}.b.overdue{color:var(--bad)}
+.tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);margin-top:10px;padding-top:10px}
+.tot b{font:700 26px var(--serif)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:7px 4px;border-bottom:1px solid var(--line)}th{color:var(--mut);font-weight:600}th.r,td.r{text-align:right}
+.bar{height:8px;border-radius:4px;background:var(--acc);min-width:2px}
+.sheet h2{font-size:30px;margin:0}.sheet .sh,.sheet .g2{display:flex;justify-content:space-between;gap:16px;margin-bottom:16px}
+textarea{resize:vertical}
+@media print{body{background:#fff}body *{visibility:hidden}.sheet,.sheet *{visibility:visible}.sheet{position:absolute;left:0;top:0;width:100%;border:0;color:#000}}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><h1>Wordbill</h1><button id="inst" class="pri" hidden onclick="inst()">Install app</button></div>
+<p class="tag">Invoices and payment reminders for freelance translators</p>
+<nav>
+<button data-t="inv" onclick="go('inv')">Invoices</button>
+<button data-t="cli" onclick="go('cli')">Clients</button>
+<button data-t="inc" onclick="go('inc')">Income</button>
+<button data-t="set" onclick="go('set')">My details</button>
+</nav>
+</header>
+<main id="app"></main>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={me:{name:'',email:'',address:'',pay:'',fee:1.5},clients:[],invoices:[],n:0};
+try{const r=localStorage.getItem('wordbill1');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem('wordbill1',JSON.stringify(S))}catch(e){}};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const U=d=>new Date(d+'T00:00:00Z');
+const addDays=(d,n)=>{const x=U(d);x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
+const diff=(a,b)=>Math.round((U(b)-U(a))/864e5);
+const r2=n=>Math.round(n*100)/100;
+const money=(n,c)=>{try{return new Intl.NumberFormat(undefined,{style:'currency',currency:c||'USD'}).format(n)}catch(e){return (c||'')+' '+r2(n).toFixed(2)}};
+const total=i=>r2((+i.words||0)*(+i.rate||0)+(+i.xa||0));
+const status=i=>i.paid?'paid':(i.due<today()?'overdue':'unpaid');
+const late=i=>(!i.paid&&i.due<today())?r2(total(i)*(+i.fee||0)/100*diff(i.due,today())/30):0;
+const cl=id=>S.clients.find(c=>c.id===id)||{id:'',name:'(deleted client)',terms:30,cur:'USD',email:'',po:false};
+const by=id=>S.invoices.find(i=>i.id===id);
+const g=id=>{const e=document.getElementById(id);return e?e.value.trim():''};
+const fld=(l,id,v,t,x)=>`<label>${l}<input id="${id}" type="${t||'text'}" value="${esc(v)}" ${x||''}></label>`;
+const txa=(l,id,v,r)=>`<label>${l}<textarea id="${id}" rows="${r||3}">${esc(v)}</textarea></label>`;
+const br=s=>esc(s).replace(/\n/g,'<br>');
+let V={tab:'inv',sub:'',id:''};
+const go=(tab,sub,id)=>{V={tab,sub:sub||'',id:id||''};render();window.scrollTo(0,0)};
+
+function vInv(){
+  const open=S.invoices.filter(i=>!i.paid),sums={};
+  open.forEach(i=>sums[i.cur]=(sums[i.cur]||0)+total(i)+late(i));
+  const od=open.filter(i=>status(i)==='overdue').length,ks=Object.entries(sums);
+  let h='';
+  if(!S.clients.length) h+=`<div class="card"><b>Start in three steps</b><p class="mut">Add your details so they appear on invoices, add your first client, then create an invoice.</p><div class="row"><button onclick="go('set')">Add my details</button><button class="pri" onclick="go('cli','form')">Add a client</button></div></div>`;
+  h+=`<div class="row"><div class="card k"><span>Waiting to be paid (with late fees)</span><b>${ks.length?ks.map(([c,v])=>money(v,c)).join(' · '):'Nothing yet'}</b></div><div class="card k"><span>Overdue invoices</span><b class="${od?'bad':''}">${od}</b></div></div>`;
+  if(S.clients.length) h+=`<div class="row"><button class="pri" onclick="go('inv','form')">New invoice</button></div>`;
+  const list=[...S.invoices].sort((a,b)=>b.date.localeCompare(a.date)||b.no.localeCompare(a.no));
+  if(!list.length&&S.clients.length) h+=`<p class="mut">No invoices yet. Create your first one above.</p>`;
+  list.forEach(i=>{const c=cl(i.cid),st=status(i),lf=late(i);
+    h+=`<div class="card"><div class="top"><div><b>${esc(i.no)}</b> for ${esc(c.name)}<div class="mut">Due ${i.due}${i.pair?' · '+esc(i.pair):''}${i.words?' · '+Number(i.words).toLocaleString()+' words':''}</div>${lf?`<div class="bad mut">Late fee so far ${money(lf,i.cur)}</div>`:''}</div><div class="r"><b>${money(total(i),i.cur)}</b><br><span class="b ${st}">${st}</span></div></div>
+    <div class="row"><button onclick="go('inv','sheet','${i.id}')">View</button><button onclick="go('inv','form','${i.id}')">Edit</button><button onclick="pay('${i.id}')">${i.paid?'Mark unpaid':'Mark paid'}</button>${i.paid?'':`<button onclick="go('inv','remind','${i.id}')">Reminder</button>`}<button onclick="del('inv','${i.id}',this)">Delete</button></div></div>`});
+  return h;
+}
+function vForm(){
+  const e=by(V.id)||{},cid=e.cid||S.clients[0].id,c=cl(cid),date=e.date||today();
+  return `<h2>${e.id?'Edit':'New'} invoice</h2><div class="card">
+  <label>Client<select id="f-cid" onchange="cChg()">${S.clients.map(x=>`<option value="${x.id}" ${x.id===cid?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label>
+  <div id="hint" class="mut"></div>
+  <div class="two">${fld('Issue date','f-date',date,'date','onchange="cChg(1)"')}${fld('Due date','f-due',e.due||addDays(date,+c.terms||0),'date')}</div>
+  <div class="two">${fld('Currency','f-cur',e.cur||c.cur,'text','maxlength="3" oninput="tot()"')}${fld('Language pair','f-pair',e.pair||'','text','placeholder="EN to FR"')}</div>
+  <div class="two">${fld('Word count','f-words',e.words||'','number','inputmode="numeric" oninput="tot()"')}${fld('Rate per word','f-rate',e.rate||'','number','step="any" inputmode="decimal" oninput="tot()"')}</div>
+  <div class="two">${fld('Extra fee label (optional)','f-xd',e.xd||'')}${fld('Extra fee amount','f-xa',e.xa||'','number','step="any" oninput="tot()"')}</div>
+  <div class="two">${fld('PO number','f-po',e.po||'')}${fld('Late fee, % per month','f-fee',e.fee!=null?e.fee:(S.me.fee!=null?S.me.fee:1.5),'number','step="any"')}</div>
+  ${txa('Notes (optional)','f-notes',e.notes||'',2)}
+  <div class="tot"><span>Total</span><b id="f-tot"></b></div><div id="err" class="bad"></div>
+  <div class="row"><button onclick="go('inv')">Cancel</button><button class="pri" onclick="saveInv()">Save invoice</button></div></div>`;
+}
+function hint(){const c=cl(g('f-cid')),h=document.getElementById('hint');if(h)h.textContent=`Terms: ${c.terms} days.`+(c.po?' This client needs a PO number on invoices.':'')}
+function cChg(d){const c=cl(g('f-cid'));if(!d)document.getElementById('f-cur').value=c.cur;if(g('f-date'))document.getElementById('f-due').value=addDays(g('f-date'),+c.terms||0);hint();tot()}
+function tot(){const t=document.getElementById('f-tot');if(t)t.textContent=money((+g('f-words')||0)*(+g('f-rate')||0)+(+g('f-xa')||0),(g('f-cur')||'USD').toUpperCase())}
+function saveInv(){
+  const c=cl(g('f-cid')),words=+g('f-words'),rate=+g('f-rate'),err=m=>{document.getElementById('err').textContent=m};
+  if(!g('f-date')||!g('f-due'))return err('Set both the issue date and the due date.');
+  if(!(words>0&&rate>0)&&!(+g('f-xa')>0))return err('Enter a word count and a rate per word, or an extra fee.');
+  if(c.po&&!g('f-po'))return err('This client needs a PO number. Enter it above.');
+  const o={cid:c.id,date:g('f-date'),due:g('f-due'),cur:(g('f-cur')||'USD').toUpperCase(),pair:g('f-pair'),words,rate,xd:g('f-xd'),xa:+g('f-xa')||0,po:g('f-po'),fee:+g('f-fee')||0,notes:g('f-notes')};
+  const e=by(V.id);
+  if(e)Object.assign(e,o);else{S.n=(S.n||0)+1;S.invoices.push(Object.assign({id:uid(),no:'INV-'+String(S.n).padStart(3,'0'),paid:null},o))}
+  save();go('inv');
+}
+function pay(id){const i=by(id);i.paid=i.paid?null:today();save();render()}
+function del(k,id,b){
+  if(b.dataset.s!=='1'){b.dataset.s='1';b.textContent='Tap again to delete';return}
+  if(k==='inv')S.invoices=S.invoices.filter(i=>i.id!==id);else{S.clients=S.clients.filter(c=>c.id!==id)}
+  save();render();
+}
+function vSheet(){
+  const i=by(V.id),c=cl(i.cid),m=S.me,lf=late(i);
+  return `<div class="row"><button onclick="go('inv')">Back</button><button class="pri" onclick="window.print()">Print or save as PDF</button><button onclick="go('inv','form','${i.id}')">Edit</button></div>
+  <p class="mut">If the print window doesn’t open here, use your browser menu and choose Print.</p>
+  <div class="card sheet"><div class="sh"><div><h2>Invoice</h2><div class="mut">${esc(i.no)}</div></div><div class="r"><b>${esc(m.name)}</b><br>${esc(m.email)}<br>${br(m.address)}</div></div>
+  <div class="g2"><div><span class="mut">Bill to</span><br><b>${esc(c.name)}</b><br>${esc(c.email)}</div><div class="r"><span class="mut">Issued</span> ${i.date}<br><span class="mut">Due</span> <b>${i.due}</b>${i.po?`<br><span class="mut">PO</span> ${esc(i.po)}`:''}</div></div>
+  <table><tr><th>Description</th><th class="r">Words</th><th class="r">Rate</th><th class="r">Amount</th></tr>
+  ${i.words?`<tr><td>Translation${i.pair?' ('+esc(i.pair)+')':''}</td><td class="r">${Number(i.words).toLocaleString()}</td><td class="r">${esc(i.cur)} ${i.rate}</td><td class="r">${money(r2(i.words*i.rate),i.cur)}</td></tr>`:''}
+  ${i.xa?`<tr><td>${esc(i.xd||'Additional fee')}</td><td></td><td></td><td class="r">${money(+i.xa,i.cur)}</td></tr>`:''}</table>
+  <div class="tot"><span>Total due</span><b>${money(total(i),i.cur)}</b></div>
+  ${lf?`<div class="r bad">Late fee to date: ${money(lf,i.cur)}</div>`:''}
+  <p class="mut">${i.fee?`Late payments incur a fee of ${i.fee}% per month. `:''}${esc(i.notes)}</p>
+  ${m.pay?`<div><span class="mut">Payment details</span><br>${br(m.pay)}</div>`:''}</div>`;
+}
+function vRem(){
+  const i=by(V.id),c=cl(i.cid),lf=late(i),t=money(total(i),i.cur),me=S.me.name||'';
+  const body=status(i)==='overdue'
+   ?`Hi ${c.name},\n\nI hope you’re well. Invoice ${i.no} (${t}) was due on ${i.due} and I haven’t seen the payment yet. Could you please confirm when I can expect it?${lf?`\n\nAs per our terms, a late fee of ${i.fee}% per month applies (currently ${money(lf,i.cur)}).`:''}\n\nThank you,\n${me}`
+   :`Hi ${c.name},\n\nA friendly reminder that invoice ${i.no} (${t}) is due on ${i.due}. Please let me know if you need anything from me to process it.\n\nThank you,\n${me}`;
+  return `<h2>Reminder for ${esc(i.no)}</h2><div class="card"><textarea id="rm" rows="10">${esc(body)}</textarea>
+  <div class="row"><button onclick="go('inv')">Back</button><button class="pri" onclick="cp()">Copy message</button>${c.email?`<a class="btn" href="mailto:${esc(c.email)}?subject=${encodeURIComponent('Invoice '+i.no)}&body=${encodeURIComponent(body)}">Open in email</a>`:''}</div><div id="msg" class="mut"></div></div>`;
+}
+function cp(){const t=document.getElementById('rm'),m=document.getElementById('msg');t.select();
+  const ok=()=>{m.textContent='Copied.'},no=()=>{m.textContent='Select the text and copy it manually.'};
+  try{navigator.clipboard.writeText(t.value).then(ok,()=>{try{document.execCommand('copy')?ok():no()}catch(e){no()}})}catch(e){try{document.execCommand('copy')?ok():no()}catch(x){no()}}}
+function vCli(){
+  let h=`<div class="row"><button class="pri" onclick="go('cli','form')">Add client</button></div>`;
+  if(!S.clients.length)h+=`<p class="mut">No clients yet. Add the agencies or companies you translate for, with their payment terms.</p>`;
+  S.clients.forEach(c=>{h+=`<div class="card"><div class="top"><div><b>${esc(c.name)}</b><div class="mut">${esc(c.email)||'No email'} · ${esc(c.cur)} · Pays in ${c.terms} days${c.po?' · PO required':''}</div></div></div><div class="row"><button onclick="go('cli','form','${c.id}')">Edit</button><button onclick="del('cli','${c.id}',this)">Delete</button></div></div>`});
+  return h;
+}
+function vCliForm(){
+  const e=S.clients.find(c=>c.id===V.id)||{};
+  return `<h2>${e.id?'Edit':'New'} client</h2><div class="card">${fld('Client or agency name','c-name',e.name||'')}${fld('Email (for reminders)','c-email',e.email||'','email')}
+  <div class="two">${fld('Currency','c-cur',e.cur||'USD','text','maxlength="3"')}${fld('Payment terms, in days','c-terms',e.terms!=null?e.terms:30,'number')}</div>
+  <label class="chk"><input type="checkbox" id="c-po" ${e.po?'checked':''}> Needs a PO number on invoices</label><div id="err" class="bad"></div>
+  <div class="row"><button onclick="go('cli')">Cancel</button><button class="pri" onclick="saveCli()">Save client</button></div></div>`;
+}
+function saveCli(){
+  if(!g('c-name'))return document.getElementById('err').textContent='Enter the client’s name.';
+  const o={name:g('c-name'),email:g('c-email'),cur:(g('c-cur')||'USD').toUpperCase(),terms:Math.max(0,+g('c-terms')||0),po:document.getElementById('c-po').checked};
+  const e=S.clients.find(c=>c.id===V.id);
+  if(e)Object.assign(e,o);else S.clients.push(Object.assign({id:uid()},o));
+  save();go('cli');
+}
+function vInc(){
+  if(!S.invoices.length)return `<p class="mut">Your income summary appears here once you create invoices.</p>`;
+  let h='';const curs=[...new Set(S.invoices.map(i=>i.cur))];
+  curs.forEach(cur=>{
+    const inv=S.invoices.filter(i=>i.cur===cur),paid=inv.filter(i=>i.paid),months=[];
+    const d=new Date();for(let k=5;k>=0;k--){const x=new Date(d.getFullYear(),d.getMonth()-k,1);months.push(x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0'))}
+    const vals=months.map(m=>paid.filter(i=>i.paid.slice(0,7)===m).reduce((a,i)=>a+total(i),0)),mx=Math.max(...vals,1);
+    h+=`<h2>${esc(cur)}</h2><div class="card"><div class="top"><div><span class="mut">Received, last 6 months</span><br><b style="font:700 24px var(--serif)">${money(vals.reduce((a,b)=>a+b,0),cur)}</b></div><div class="r"><span class="mut">Still owed</span><br><b>${money(inv.filter(i=>!i.paid).reduce((a,i)=>a+total(i),0),cur)}</b></div></div>
+    <table>${months.map((m,k)=>`<tr><td>${m}</td><td style="width:55%"><div class="bar" style="width:${vals[k]/mx*100}%"></div></td><td class="r">${money(vals[k],cur)}</td></tr>`).join('')}</table></div>
+    <div class="card"><table><tr><th>Client</th><th class="r">Paid</th><th class="r">Days to pay</th></tr>${[...new Set(inv.map(i=>i.cid))].map(id=>{const p=paid.filter(i=>i.cid===id),av=p.length?Math.round(p.reduce((a,i)=>a+diff(i.date,i.paid),0)/p.length):'–';return `<tr><td>${esc(cl(id).name)}</td><td class="r">${money(p.reduce((a,i)=>a+total(i),0),cur)}</td><td class="r">${av}</td></tr>`}).join('')}</table><p class="mut">Days to pay is the average from issue date to the day you marked the invoice paid.</p></div>`;
+  });
+  return h;
+}
+function vSet(){
+  const m=S.me;
+  return `<h2>My details</h2><p class="mut">These appear at the top of every invoice.</p><div class="card">${fld('Your name or business name','s-name',m.name)}${fld('Email','s-email',m.email,'email')}${txa('Address (optional)','s-addr',m.address,2)}${txa('Payment details (bank name, account number, SWIFT or IBAN, or other ways to pay you)','s-pay',m.pay,4)}${fld('Default late fee, % per month','s-fee',m.fee,'number','step="any"')}
+  <div class="row"><button class="pri" onclick="saveSet()">Save details</button></div><div id="msg" class="mut"></div></div>
+  <h2>Backup</h2><p class="mut">Your data lives only in this browser. Copy this text somewhere safe, and paste it back here to restore it on another device.</p>
+  <div class="card"><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea><div class="row"><button onclick="restore()">Restore from the text above</button></div><div id="msg2" class="mut"></div></div>`;
+}
+function saveSet(){S.me={name:g('s-name'),email:g('s-email'),address:g('s-addr'),pay:g('s-pay'),fee:+g('s-fee')||0};save();document.getElementById('msg').textContent='Saved.';document.getElementById('bk').value=JSON.stringify(S)}
+function restore(){const m=document.getElementById('msg2');try{const o=JSON.parse(g('bk'));if(!o||!Array.isArray(o.clients)||!Array.isArray(o.invoices))throw 0;S=Object.assign({me:{},clients:[],invoices:[],n:0},o);save();m.textContent='Restored.';setTimeout(render,600)}catch(e){m.textContent='That text isn’t a valid backup.'}}
+function render(){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===V.tab));
+  const m={inv:{'':vInv,form:vForm,sheet:vSheet,remind:vRem},cli:{'':vCli,form:vCliForm},inc:{'':vInc},set:{'':vSet}};
+  if(V.tab==='inv'&&V.sub==='form'&&!S.clients.length)V={tab:'cli',sub:'form',id:''};
+  if((V.sub==='sheet'||V.sub==='remind')&&!by(V.id))V={tab:'inv',sub:'',id:''};
+  $('#app').innerHTML=((m[V.tab]||m.inv)[V.sub]||(m[V.tab]||m.inv)[''])();
+  if(V.tab==='inv'&&V.sub==='form'){hint();tot()}
+}
+render();
+let dp;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;document.getElementById('inst').hidden=false});
+function inst(){if(dp){dp.prompt();dp=null;document.getElementById('inst').hidden=true}}
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
